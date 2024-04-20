@@ -184,7 +184,7 @@
             Newsavebtn.TabIndex = 7;
             Newsavebtn.Text = "New Save";
             Newsavebtn.UseVisualStyleBackColor = true;
-            Newsavebtn.Click += button1_Click;
+            Newsavebtn.Click += NewSavebtn_Click;
             // 
             // treeView1
             // 
