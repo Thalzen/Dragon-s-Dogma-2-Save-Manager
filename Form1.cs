@@ -13,6 +13,8 @@ namespace Dragon_s_Dogma_2_Save_Manager
 
         string folderPath = Properties.Settings.Default.filepath;
         string backupPath = Properties.Settings.Default.backuppath;
+        string selectedbackupfilePath;
+        string selectedbackupfilePathcheck;
 
         public Form1()
         {
@@ -39,8 +41,6 @@ namespace Dragon_s_Dogma_2_Save_Manager
             unfocusbutton.Focus();
 
 
-
-
             if (!string.IsNullOrEmpty(folderPath))
             {
                 textDirectory.Text = folderPath;
@@ -51,24 +51,7 @@ namespace Dragon_s_Dogma_2_Save_Manager
             if (!string.IsNullOrEmpty(backupPath))
                 backupDirectory.Text = backupPath;
 
-            /*
-            if (Regex.IsMatch(folderPath + "\\win_64save", @"remote\\win_64save$") && !string.IsNullOrEmpty(folderPath))
-            {
-                string[] files = Directory.GetFiles(folderPath + "\\win64_save");
-                // Add files to the ListBox
-                
-                foreach (string file in files)
-                {
-                    //FileInfo fileInfo = new FileInfo(file);
-                    //DateTime dtcreation = fileInfo.LastWriteTime;
-                    File.Copy(file,backupPath);
-                    //listBox1.Items.Add(Path.GetFileName(file));
-                    //listBox1.Items.Add(dtcreation);
-                }
-            }
-            else
-            MessageBox.Show("folder path not set correctly");
-            */
+
             if (string.IsNullOrEmpty(textDirectory.Text))
             {
                 textDirectory.Text = " Select the \"remote\" folder that is located in your Steam folder.";
@@ -124,31 +107,58 @@ namespace Dragon_s_Dogma_2_Save_Manager
             }
             else
             {
+                dlg.SelectedPath = Regex.Replace(dlg.SelectedPath, @"\\DD2\sSave\sBackup$", "");
                 Properties.Settings.Default.backuppath = dlg.SelectedPath;
                 backupPath = dlg.SelectedPath;
                 backupDirectory.Text = dlg.SelectedPath;
                 Properties.Settings.Default.Save();
             }
+
+            ActualizeTreeView();
         }
 
         private void LoadBUbtn_Click(object sender, EventArgs e)
         {
             unfocusbutton.Focus();
+            if (string.IsNullOrEmpty(folderPath))
+                MessageBox.Show($"Error loading Backup savefile, Steam folder path is not set.");
+            else if (string.IsNullOrEmpty(backupPath))
+                MessageBox.Show($"Error loading Backup savefile, backup folder path is not set.");
 
+            else if (selectedbackupfilePathcheck != null)
+            {
+                try
+                {
+                    //check if steamfolder is set correctly
+                    if (Regex.IsMatch(folderPath + "\\win64_save", @"remote\\win64_save$") && !string.IsNullOrEmpty(folderPath))
+                    {
+                        string[] files = Directory.GetFiles(selectedbackupfilePath);
 
+                        foreach (string file in files)
+                        {
 
+                            File.Copy(file, folderPath + "\\win64_save\\" + Path.GetFileName(file), true);
+                            MessageBox.Show(file);
 
+                        }
 
+                        ActualizeTreeView();
+                    }
+                    else
+                        MessageBox.Show("Error steam folder path not set correctly, make sure that it is set to \"remote\"");
 
+                }
+                catch (Exception ex)
+                {
 
+                    MessageBox.Show($"Error : {ex.Message}");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error, No backup selected.");
+            }
 
-
-
-
-
-
-            //string SaveFolders = Path.GetDirectoryName(backupPath + "\\DD2 Save Backup\\");
-            //MessageBox.Show(SaveFolders);
         }
 
         private void createBUbtn_Click(object sender, EventArgs e)
@@ -156,9 +166,9 @@ namespace Dragon_s_Dogma_2_Save_Manager
             unfocusbutton.Focus();
             // Specify the location where you want to create the folder
             if (string.IsNullOrEmpty(folderPath))
-                MessageBox.Show($"Error creating Backup savefile, Steam folder path not set.");
+                MessageBox.Show($"Error creating Backup savefile, Steam folder path not set correctly.");
             else if (string.IsNullOrEmpty(backupPath))
-                MessageBox.Show($"Error creating Backup savefile, backup folder path is not set.");
+                MessageBox.Show($"Error creating Backup savefile, backup folder path is not set correctly.");
             else
             {
                 try
@@ -168,59 +178,55 @@ namespace Dragon_s_Dogma_2_Save_Manager
                     {
                         Directory.CreateDirectory(backupPath + "\\DD2 Save Backup");
 
-
+                    }
+                    else if (Regex.IsMatch(backupPath, @"\\DD2\sSave\sBackup$"))
+                    {
+                        backupPath = Regex.Replace(backupPath, @"\\DD2\sSave\sBackup$", "");
                     }
 
+                    string[] files = Directory.GetFiles(folderPath + "\\win64_save");
 
-
-
-
-                    //check if steamfolder is set correctly
-                    if (Regex.IsMatch(folderPath + "\\win_64save", @"remote\\win_64save$") && !string.IsNullOrEmpty(folderPath))
+                    //generate folder to store savefiles
+                    if (!string.IsNullOrEmpty(savefilename.Text))
                     {
-                        string[] files = Directory.GetFiles(folderPath + "\\win64_save");
-                        //generate folder to store savefiles
+                        Directory.CreateDirectory(backupPath + "\\DD2 Save Backup\\" + savefilename.Text);
 
-                        if (!string.IsNullOrEmpty(savefilename.Text))
+                        foreach (string file in files)
                         {
-                            Directory.CreateDirectory(backupPath + "\\DD2 Save Backup\\" + savefilename.Text);
-
-                            foreach (string file in files)
-                            {
-                                //FileInfo fileInfo = new FileInfo(file);
-                                //DateTime dtcreation = fileInfo.LastWriteTime;
-                                File.Copy(file, backupPath + "\\DD2 Save Backup\\" + savefilename.Text + "\\" + Path.GetFileName(file), true);
-                                //listBox1.Items.Add(Path.GetFileName(file));
-                                //listBox1.Items.Add(dtcreation);
-                            }
+                            //FileInfo fileInfo = new FileInfo(file);
+                            //DateTime dtcreation = fileInfo.LastWriteTime;
+                            File.Copy(file, backupPath + "\\DD2 Save Backup\\" + savefilename.Text + "\\" + Path.GetFileName(file), true);
+                            //listBox1.Items.Add(Path.GetFileName(file));
+                            //listBox1.Items.Add(dtcreation);
                         }
-                        else
-                        {
-
-                            FileInfo fileInfo = new FileInfo(files[0]);
-                            DateTime dtcreation = fileInfo.CreationTime;
-                            string pattern = @"[\/\\\:\*\?\""\<\>\|]";
-                            string cleanedFileName = Regex.Replace(dtcreation.ToString(), pattern, "-");
-                            Directory.CreateDirectory(backupPath + "\\DD2 Save Backup\\" + "DD2 Save " + cleanedFileName);
-
-                            foreach (string file in files)
-                            {
-                                //FileInfo fileInfo = new FileInfo(file);
-                                //DateTime dtcreation = fileInfo.LastWriteTime;
-                                File.Copy(file, backupPath + "\\DD2 Save Backup\\" + "DD2 Save " + cleanedFileName + "\\" + Path.GetFileName(file), true);
-                                //listBox1.Items.Add(Path.GetFileName(file));
-                                //listBox1.Items.Add(dtcreation);
-                            }
-
-                        }
-
-
-                        ActualizeTreeView();
-
-
                     }
                     else
-                        MessageBox.Show("Error steam folder path not set correctly, make sure that it is set to \"remote\"");
+                    {
+
+                        FileInfo fileInfo = new FileInfo(files[0]);
+                        DateTime dtcreation = fileInfo.CreationTime;
+                        string pattern = @"[\/\\\:\*\?\""\<\>\|]";
+                        string cleanedFileName = Regex.Replace(dtcreation.ToString(), pattern, "-");
+                        string cleanedFileName1 = Regex.Replace(cleanedFileName, @"\d{2}$", "");
+                        string cleanedFileName2 = Regex.Replace(cleanedFileName1, @"-(?!.*-)", "");
+                        string cleanedFileNameF = Regex.Replace(cleanedFileName2, @"-(?!.*-)", "h");
+                        Directory.CreateDirectory(backupPath + "\\DD2 Save Backup\\" + "DD2 Save " + cleanedFileNameF);
+
+                        foreach (string file in files)
+                        {
+                            //FileInfo fileInfo = new FileInfo(file);
+                            //DateTime dtcreation = fileInfo.LastWriteTime;
+                            File.Copy(file, backupPath + "\\DD2 Save Backup\\" + "DD2 Save " + cleanedFileNameF + "\\" + Path.GetFileName(file), true);
+                            //listBox1.Items.Add(Path.GetFileName(file));
+                            //listBox1.Items.Add(dtcreation);
+                        }
+
+                    }
+
+
+                    ActualizeTreeView();
+
+
 
                 }
                 catch (Exception ex)
@@ -257,6 +263,22 @@ namespace Dragon_s_Dogma_2_Save_Manager
         private void Refreshbtn_Click(object sender, EventArgs e)
         {
             unfocusbutton.Focus();
+            ActualizeTreeView();
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            unfocusbutton.Focus();
+            selectedbackupfilePath = backupPath + "\\DD2 Save Backup\\" + treeView1.SelectedNode.Text;
+            selectedbackupfilePathcheck = treeView1.SelectedNode.Text;
+            MessageBox.Show(selectedbackupfilePath);
+        }
+
+
+        private void Deletebtn_Click(object sender, EventArgs e)
+        {
+            string SaveFoldersDelete = selectedbackupfilePath;
+            Directory.Delete(selectedbackupfilePath, true);
             ActualizeTreeView();
         }
     }

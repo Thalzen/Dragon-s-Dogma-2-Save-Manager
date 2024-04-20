@@ -45,7 +45,7 @@
             unfocusbutton = new Button();
             label2 = new Label();
             Refreshbtn = new Button();
-            button1 = new Button();
+            Deletebtn = new Button();
             SuspendLayout();
             // 
             // textDirectory
@@ -58,8 +58,10 @@
             textDirectory.Location = new Point(113, 12);
             textDirectory.Margin = new Padding(5, 6, 5, 6);
             textDirectory.Name = "textDirectory";
+            textDirectory.ReadOnly = true;
             textDirectory.Size = new Size(541, 25);
-            textDirectory.TabIndex = 1;
+            textDirectory.TabIndex = 2;
+            textDirectory.TabStop = false;
             textDirectory.Text = " Select the \"remote\" folder that is located in your Steam folder.";
             // 
             // steampathbtn
@@ -71,7 +73,7 @@
             steampathbtn.Location = new Point(7, 8);
             steampathbtn.Name = "steampathbtn";
             steampathbtn.Size = new Size(98, 32);
-            steampathbtn.TabIndex = 2;
+            steampathbtn.TabIndex = 1;
             steampathbtn.Text = "SteamFiles";
             steampathbtn.UseVisualStyleBackColor = false;
             steampathbtn.Click += steampathbtn_Click;
@@ -110,8 +112,10 @@
             backupDirectory.Location = new Point(113, 71);
             backupDirectory.Margin = new Padding(5, 6, 5, 6);
             backupDirectory.Name = "backupDirectory";
+            backupDirectory.ReadOnly = true;
             backupDirectory.Size = new Size(541, 25);
-            backupDirectory.TabIndex = 8;
+            backupDirectory.TabIndex = 4;
+            backupDirectory.TabStop = false;
             backupDirectory.Text = " Select a folder to store backup";
             // 
             // backupathbtn
@@ -123,7 +127,7 @@
             backupathbtn.Location = new Point(7, 67);
             backupathbtn.Name = "backupathbtn";
             backupathbtn.Size = new Size(98, 32);
-            backupathbtn.TabIndex = 9;
+            backupathbtn.TabIndex = 2;
             backupathbtn.Text = "Backup Path";
             backupathbtn.UseVisualStyleBackColor = false;
             backupathbtn.Click += backupathbtn_Click;
@@ -138,7 +142,7 @@
             LoadBUbtn.Margin = new Padding(3, 5, 3, 3);
             LoadBUbtn.Name = "LoadBUbtn";
             LoadBUbtn.Size = new Size(100, 40);
-            LoadBUbtn.TabIndex = 10;
+            LoadBUbtn.TabIndex = 5;
             LoadBUbtn.Text = "Load Backup";
             LoadBUbtn.UseVisualStyleBackColor = true;
             LoadBUbtn.Click += LoadBUbtn_Click;
@@ -156,16 +160,16 @@
             // savefilename
             // 
             savefilename.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            savefilename.BackColor = Color.Gray;
+            savefilename.BackColor = Color.DimGray;
             savefilename.BorderStyle = BorderStyle.FixedSingle;
             savefilename.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            savefilename.ForeColor = Color.Silver;
+            savefilename.ForeColor = Color.Gainsboro;
             savefilename.Location = new Point(7, 135);
             savefilename.Margin = new Padding(5, 6, 5, 6);
             savefilename.MaxLength = 50;
             savefilename.Name = "savefilename";
             savefilename.Size = new Size(205, 25);
-            savefilename.TabIndex = 11;
+            savefilename.TabIndex = 3;
             // 
             // Newsavebtn
             // 
@@ -177,7 +181,7 @@
             Newsavebtn.Margin = new Padding(3, 5, 3, 3);
             Newsavebtn.Name = "Newsavebtn";
             Newsavebtn.Size = new Size(100, 40);
-            Newsavebtn.TabIndex = 13;
+            Newsavebtn.TabIndex = 7;
             Newsavebtn.Text = "New Save";
             Newsavebtn.UseVisualStyleBackColor = true;
             Newsavebtn.Click += button1_Click;
@@ -193,7 +197,9 @@
             treeView1.Name = "treeView1";
             treeView1.SelectedImageIndex = 1;
             treeView1.Size = new Size(435, 288);
-            treeView1.TabIndex = 15;
+            treeView1.TabIndex = 11;
+            treeView1.TabStop = false;
+            treeView1.AfterSelect += treeView1_AfterSelect;
             // 
             // imageList1
             // 
@@ -234,24 +240,25 @@
             Refreshbtn.Margin = new Padding(3, 5, 3, 3);
             Refreshbtn.Name = "Refreshbtn";
             Refreshbtn.Size = new Size(100, 40);
-            Refreshbtn.TabIndex = 17;
+            Refreshbtn.TabIndex = 8;
             Refreshbtn.Text = "Refresh Backup";
             Refreshbtn.UseVisualStyleBackColor = true;
             Refreshbtn.Click += Refreshbtn_Click;
             // 
-            // button1
+            // Deletebtn
             // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.BackgroundImageLayout = ImageLayout.None;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button1.Location = new Point(112, 297);
-            button1.Margin = new Padding(3, 5, 3, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(100, 40);
-            button1.TabIndex = 18;
-            button1.Text = "Delete Backup";
-            button1.UseVisualStyleBackColor = true;
+            Deletebtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            Deletebtn.BackgroundImageLayout = ImageLayout.None;
+            Deletebtn.FlatStyle = FlatStyle.Flat;
+            Deletebtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Deletebtn.Location = new Point(112, 297);
+            Deletebtn.Margin = new Padding(3, 5, 3, 3);
+            Deletebtn.Name = "Deletebtn";
+            Deletebtn.Size = new Size(100, 40);
+            Deletebtn.TabIndex = 6;
+            Deletebtn.Text = "Delete Backup";
+            Deletebtn.UseVisualStyleBackColor = true;
+            Deletebtn.Click += Deletebtn_Click;
             // 
             // Form1
             // 
@@ -259,13 +266,12 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(31, 31, 31);
             ClientSize = new Size(664, 432);
-            Controls.Add(button1);
+            Controls.Add(Deletebtn);
             Controls.Add(Refreshbtn);
             Controls.Add(label2);
             Controls.Add(treeView1);
             Controls.Add(Newsavebtn);
             Controls.Add(label1);
-            Controls.Add(savefilename);
             Controls.Add(LoadBUbtn);
             Controls.Add(backupathbtn);
             Controls.Add(backupDirectory);
@@ -274,6 +280,7 @@
             Controls.Add(steampathbtn);
             Controls.Add(textDirectory);
             Controls.Add(unfocusbutton);
+            Controls.Add(savefilename);
             Font = new Font("Segoe UI", 10F);
             ForeColor = Color.Silver;
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -294,13 +301,13 @@
         private Button backupathbtn;
         private Button LoadBUbtn;
         private Label label1;
-        private TextBox savefilename;
         private Button Newsavebtn;
         private TreeView treeView1;
         private Button unfocusbutton;
         private ImageList imageList1;
         private Label label2;
         private Button Refreshbtn;
-        private Button button1;
+        private Button Deletebtn;
+        private TextBox savefilename;
     }
 }
